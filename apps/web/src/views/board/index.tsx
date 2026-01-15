@@ -38,7 +38,9 @@ import Filters from "./components/Filters";
 import List from "./components/List";
 import { NewCardForm } from "./components/NewCardForm";
 import { NewListForm } from "./components/NewListForm";
+import { MoveBoardModal } from "./components/MoveBoardModal";
 import { NewTemplateForm } from "./components/NewTemplateForm";
+import { UpdateBoardCoverForm } from "./components/UpdateBoardCoverForm";
 import UpdateBoardSlugButton from "./components/UpdateBoardSlugButton";
 import { UpdateBoardSlugForm } from "./components/UpdateBoardSlugForm";
 import VisibilityButton from "./components/VisibilityButton";
@@ -364,12 +366,32 @@ export default function BoardPage({ isTemplate }: { isTemplate?: boolean }) {
 
         <Modal
           modalSize="sm"
+          isVisible={isOpen && modalContentType === "UPDATE_BOARD_COVER"}
+        >
+          <UpdateBoardCoverForm
+            boardPublicId={boardId ?? ""}
+            coverImage={boardData?.coverImage ? boardData.coverImage : null}
+          />
+        </Modal>
+
+        <Modal
+          modalSize="sm"
           isVisible={isOpen && modalContentType === "CREATE_TEMPLATE"}
         >
           <NewTemplateForm
             workspacePublicId={workspace.publicId ?? ""}
             sourceBoardPublicId={boardId ?? ""}
             sourceBoardName={boardData?.name ?? ""}
+          />
+        </Modal>
+
+        <Modal
+          modalSize="sm"
+          isVisible={isOpen && modalContentType === "MOVE_BOARD"}
+        >
+          <MoveBoardModal
+            boardPublicId={boardId ?? ""}
+            currentWorkspacePublicId={workspace.publicId}
           />
         </Modal>
       </>
@@ -382,7 +404,19 @@ export default function BoardPage({ isTemplate }: { isTemplate?: boolean }) {
         title={`${boardData?.name ?? (isTemplate ? t`Board` : t`Template`)} | ${workspace.name ?? t`Workspace`}`}
       />
       <div className="relative flex h-full flex-col">
-        <PatternedBackground />
+        {boardData?.coverImage ? (
+           <div className="absolute inset-0 z-0 h-[200px] w-full">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={boardData.coverImage}
+                alt="Board cover"
+                className="h-full w-full object-cover opacity-50"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white dark:to-[#0f0f0f]" />
+           </div>
+        ) : (
+           <PatternedBackground />
+        )}
         <div className="z-10 flex w-full flex-col justify-between p-6 md:flex-row md:p-8">
           {isLoading && !boardData && (
             <div className="flex space-x-2">

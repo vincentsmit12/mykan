@@ -171,6 +171,7 @@ export const getByPublicId = async (
       name: true,
       slug: true,
       visibility: true,
+      coverImage: true,
     },
     with: {
       workspace: {
@@ -564,6 +565,7 @@ export const create = async (
     slug: string;
     type?: "regular" | "template";
     sourceBoardId?: number;
+    coverImage?: string;
   },
 ) => {
   const [result] = await db
@@ -577,6 +579,7 @@ export const create = async (
       slug: boardInput.slug,
       type: boardInput.type ?? "regular",
       sourceBoardId: boardInput.sourceBoardId,
+      coverImage: boardInput.coverImage,
     })
     .returning({
       id: boards.id,
@@ -593,6 +596,8 @@ export const update = async (
     name: string | undefined;
     slug: string | undefined;
     visibility: BoardVisibilityStatus | undefined;
+    coverImage?: string | null;
+    workspaceId?: number;
     boardPublicId: string;
   },
 ) => {
@@ -602,6 +607,8 @@ export const update = async (
       name: boardInput.name,
       slug: boardInput.slug,
       visibility: boardInput.visibility,
+      coverImage: boardInput.coverImage,
+      workspaceId: boardInput.workspaceId,
       updatedAt: new Date(),
     })
     .where(eq(boards.publicId, boardInput.boardPublicId))
@@ -671,6 +678,7 @@ export const getWorkspaceAndBoardIdByBoardPublicId = async (
     columns: {
       id: true,
       workspaceId: true,
+      slug: true,
     },
     where: eq(boards.publicId, boardPublicId),
   });

@@ -1,5 +1,6 @@
 import { t } from "@lingui/core/macro";
 import {
+  HiArrowRightOnRectangle,
   HiEllipsisHorizontal,
   HiLink,
   HiOutlineDocumentDuplicate,
@@ -41,6 +42,20 @@ export default function BoardDropdown({
                 label: t`Edit board URL`,
                 action: () => openModal("UPDATE_BOARD_SLUG"),
                 icon: <HiLink className="h-[16px] w-[16px] text-dark-900" />,
+              },
+              {
+                label: t`Change cover`,
+                action: () => openModal("UPDATE_BOARD_COVER"),
+                icon: (
+                  <HiOutlineDocumentDuplicate className="h-[16px] w-[16px] text-dark-900" />
+                ), // Using duplicate icon for now, should probably use image icon if available
+              },
+              {
+                label: t`Move to workspace`,
+                action: () => openModal("MOVE_BOARD"),
+                icon: (
+                  <HiArrowRightOnRectangle className="h-[16px] w-[16px] text-dark-900" />
+                ),
               },
             ]),
 
