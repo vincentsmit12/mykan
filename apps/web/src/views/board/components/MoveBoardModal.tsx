@@ -71,7 +71,10 @@ export const MoveBoardModal = ({
   };
 
   const availableWorkspaces = workspaces?.filter(
-    (w) => w.publicId !== currentWorkspacePublicId,
+    (w) =>
+      w.publicId !== currentWorkspacePublicId &&
+      w.name &&
+      w.name.trim().length > 0,
   );
 
   return (

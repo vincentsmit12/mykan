@@ -1,17 +1,18 @@
 import { t } from "@lingui/core/macro";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import Button from "~/components/Button";
+import Input from "~/components/Input";
 import { useModal } from "~/providers/modal";
 import { usePopup } from "~/providers/popup";
 import { api } from "~/utils/api";
 
 const schema = z.object({
   file: z.any().optional(),
+  url: z.string().url().optional().or(z.literal("")),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -26,13 +27,15 @@ export const UpdateBoardCoverForm = ({
   const { closeModal } = useModal();
   const { showPopup } = usePopup();
   const utils = api.useUtils();
+  const [activeTab, setActiveTab] = useState<"upload" | "link">("upload");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(coverImage);
+  const [urlInput, setUrlInput] = useState<string>("");
 
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
@@ -97,11 +100,18 @@ export const UpdateBoardCoverForm = ({
     try {
       let key = coverImage;
 
-      if (selectedFile) {
-        key = await uploadFile(selectedFile);
-      } else if (previewUrl === null) {
-        // If previewUrl is null and no file selected, it means cover was removed
-        key = null;
+      if (activeTab === "upload") {
+        if (selectedFile) {
+          key = await uploadFile(selectedFile);
+        } else if (previewUrl === null) {
+          key = null;
+        }
+      } else {
+        if (urlInput) {
+          key = urlInput;
+        } else if (previewUrl === null) {
+            key = null;
+        }
       }
 
       await updateBoard.mutateAsync({
@@ -126,7 +136,7 @@ export const UpdateBoardCoverForm = ({
 
       {previewUrl && (
         <div className="relative h-40 w-full overflow-hidden rounded-md">
-           {/* eslint-disable-next-line @next/next/no-img-element */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={previewUrl}
             alt="Board cover preview"
@@ -137,30 +147,74 @@ export const UpdateBoardCoverForm = ({
             onClick={() => {
               setSelectedFile(null);
               setPreviewUrl(null);
+              setUrlInput("");
             }}
             className="absolute right-2 top-2 rounded-full bg-red-500 p-1 text-white hover:bg-red-600"
           >
-             Remove
+            <span className="sr-only">{t`Remove`}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+              <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+            </svg>
           </button>
         </div>
       )}
 
+      <div className="flex border-b border-gray-200 dark:border-gray-700">
+        <button
+          className={`px-4 py-2 text-sm font-medium ${
+            activeTab === "upload"
+              ? "border-b-2 border-blue-500 text-blue-600 dark:text-blue-400"
+              : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+          }`}
+          onClick={() => setActiveTab("upload")}
+        >
+          {t`Upload`}
+        </button>
+        <button
+          className={`px-4 py-2 text-sm font-medium ${
+            activeTab === "link"
+              ? "border-b-2 border-blue-500 text-blue-600 dark:text-blue-400"
+              : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+          }`}
+          onClick={() => setActiveTab("link")}
+        >
+          {t`Link`}
+        </button>
+      </div>
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div>
-          <label
-            htmlFor="cover-upload"
-            className="cursor-pointer rounded-md bg-neutral-200 px-4 py-2 text-sm font-medium text-neutral-900 hover:bg-neutral-300 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-700"
-          >
-            {previewUrl ? t`Change cover` : t`Upload cover`}
-          </label>
-          <input
-            id="cover-upload"
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleFileChange}
-          />
-        </div>
+        {activeTab === "upload" ? (
+          <div>
+            <label
+              htmlFor="cover-upload"
+              className="cursor-pointer flex justify-center w-full rounded-md border-2 border-dashed border-gray-300 px-4 py-6 text-sm font-medium text-gray-900 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-800"
+            >
+              {t`Click to upload image`}
+            </label>
+            <input
+              id="cover-upload"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileChange}
+            />
+          </div>
+        ) : (
+          <div>
+            <label className="block text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-1">
+              {t`Image URL`}
+            </label>
+            <Input
+              placeholder="https://example.com/image.jpg"
+              value={urlInput}
+              onChange={(e) => {
+                setUrlInput(e.target.value);
+                setPreviewUrl(e.target.value || null);
+              }}
+              errorMessage={errors.url?.message}
+            />
+          </div>
+        )}
 
         <div className="flex justify-end space-x-2">
           <Button variant="secondary" onClick={closeModal} type="button">
