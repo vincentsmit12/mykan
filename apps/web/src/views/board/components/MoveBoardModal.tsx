@@ -28,7 +28,7 @@ export const MoveBoardModal = ({
   const router = useRouter();
   const utils = api.useUtils();
 
-  const { data: workspaces } = api.workspace.all.useQuery();
+  const { data: workspaces, isLoading } = api.workspace.all.useQuery();
 
   const {
     register,
@@ -41,17 +41,18 @@ export const MoveBoardModal = ({
   const updateBoard = api.board.update.useMutation({
     onSuccess: (_, variables) => {
       const targetWorkspace = workspaces?.find(
-        (w) => w.publicId === variables.workspacePublicId,
+        (w) => w.workspace.publicId === variables.workspacePublicId,
       );
 
       showPopup({
+        header: t`Success`,
         message: t`Board moved successfully`,
-        type: "success",
+        icon: "success",
       });
       closeModal();
 
       if (targetWorkspace) {
-          router.push(`/${targetWorkspace.slug}`);
+        router.push(`/${targetWorkspace.workspace.slug}`);
       }
     },
     onError: (error) => {
@@ -70,12 +71,15 @@ export const MoveBoardModal = ({
     });
   };
 
-  const availableWorkspaces = workspaces?.filter(
-    (w) =>
-      w.publicId !== currentWorkspacePublicId &&
-      w.name &&
-      w.name.trim().length > 0,
-  );
+  const availableWorkspaces = workspaces
+    ?.map((w) => w.workspace)
+    .filter((ws) => !!ws)
+    .filter(
+      (w) =>
+        w.publicId !== currentWorkspacePublicId &&
+        w.name &&
+        w.name.trim().length > 0,
+    );
 
   return (
     <div className="flex flex-col space-y-4 p-4">
@@ -100,11 +104,15 @@ export const MoveBoardModal = ({
             className="rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
           >
             <option value="">{t`Select a workspace`}</option>
-            {availableWorkspaces?.map((workspace) => (
-              <option key={workspace.id} value={workspace.publicId}>
-                {workspace.name}
-              </option>
-            ))}
+            {isLoading ? (
+              <option disabled>{t`Loading...`}</option>
+            ) : (
+              availableWorkspaces?.map((workspace) => (
+                <option key={workspace.publicId} value={workspace.publicId}>
+                  {workspace.name}
+                </option>
+              ))
+            )}
           </select>
           {errors.targetWorkspacePublicId && (
             <span className="text-xs text-red-500">
