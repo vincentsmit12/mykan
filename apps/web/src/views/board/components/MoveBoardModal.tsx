@@ -28,7 +28,7 @@ export const MoveBoardModal = ({
   const router = useRouter();
   const utils = api.useUtils();
 
-  const { data: workspaces } = api.workspace.all.useQuery();
+  const { data: workspaces, isLoading } = api.workspace.all.useQuery();
 
   const {
     register,
@@ -73,6 +73,7 @@ export const MoveBoardModal = ({
 
   const availableWorkspaces = workspaces
     ?.map((w) => w.workspace)
+    .filter((ws) => !!ws)
     .filter(
       (w) =>
         w.publicId !== currentWorkspacePublicId &&
@@ -103,11 +104,15 @@ export const MoveBoardModal = ({
             className="rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
           >
             <option value="">{t`Select a workspace`}</option>
-            {availableWorkspaces?.map((workspace) => (
-              <option key={workspace.publicId} value={workspace.publicId}>
-                {workspace.name}
-              </option>
-            ))}
+            {isLoading ? (
+              <option disabled>{t`Loading...`}</option>
+            ) : (
+              availableWorkspaces?.map((workspace) => (
+                <option key={workspace.publicId} value={workspace.publicId}>
+                  {workspace.name}
+                </option>
+              ))
+            )}
           </select>
           {errors.targetWorkspacePublicId && (
             <span className="text-xs text-red-500">
