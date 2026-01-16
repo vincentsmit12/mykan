@@ -8,9 +8,12 @@ import * as labelRepo from "@kan/db/repository/label.repo";
 import * as listRepo from "@kan/db/repository/list.repo";
 import * as workspaceRepo from "@kan/db/repository/workspace.repo";
 
+import { notificationClient } from "@kan/email";
+
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { mergeActivities } from "../utils/activities";
 import { assertUserInWorkspace } from "../utils/auth";
+import { extractMentions } from "../utils/mentions";
 import { generateDownloadUrl } from "../utils/s3";
 
 export const cardRouter = createTRPCRouter({
@@ -221,6 +224,32 @@ export const cardRouter = createTRPCRouter({
         createdBy: userId,
       });
 
+      if (notificationClient) {
+        const mentions = extractMentions(input.comment);
+        const mentionedUserIds = await workspaceRepo.getUserIdsByPublicIds(
+          ctx.db,
+          mentions,
+        );
+
+        // Filter out the creator if they mentioned themselves
+        const recipients = mentionedUserIds.filter((id) => id !== userId);
+
+        if (recipients.length > 0) {
+          await (notificationClient as any).trigger("mention-in-card", {
+            to: recipients,
+            payload: {
+              cardTitle: card.title,
+              cardPublicId: card.publicId,
+              workspaceSlug: card.workspaceSlug,
+              comment: input.comment,
+              user: {
+                id: userId,
+              },
+            },
+          });
+        }
+      }
+
       return newComment;
     }),
   updateComment: protectedProcedure
@@ -300,6 +329,31 @@ export const cardRouter = createTRPCRouter({
         toComment: updatedComment.comment,
         createdBy: userId,
       });
+
+      if (notificationClient) {
+        const mentions = extractMentions(input.comment);
+        const mentionedUserIds = await workspaceRepo.getUserIdsByPublicIds(
+          ctx.db,
+          mentions,
+        );
+
+        const recipients = mentionedUserIds.filter((id) => id !== userId);
+
+        if (recipients.length > 0) {
+          await (notificationClient as any).trigger("mention-in-card", {
+            to: recipients,
+            payload: {
+              cardTitle: card.title,
+              cardPublicId: card.publicId,
+              workspaceSlug: card.workspaceSlug,
+              comment: input.comment,
+              user: {
+                id: userId,
+              },
+            },
+          });
+        }
+      }
 
       return updatedComment;
     }),
@@ -877,6 +931,32 @@ export const cardRouter = createTRPCRouter({
           fromDescription: existingCard.description ?? undefined,
           toDescription: input.description,
         });
+
+        if (notificationClient) {
+          const mentions = extractMentions(input.description);
+          const mentionedUserIds = await workspaceRepo.getUserIdsByPublicIds(
+            ctx.db,
+            mentions,
+          );
+
+          const recipients = mentionedUserIds.filter((id) => id !== userId);
+
+          if (recipients.length > 0) {
+            await (notificationClient as any).trigger("mention-in-card", {
+              to: recipients,
+              payload: {
+                cardTitle: result.title,
+                cardPublicId: result.publicId,
+                // We don't have workspaceSlug in result, need to fetch it or get from somewhere
+                workspaceSlug: card.workspaceSlug,
+                comment: input.description,
+                user: {
+                  id: userId,
+                },
+              },
+            });
+          }
+        }
       }
 
       if (

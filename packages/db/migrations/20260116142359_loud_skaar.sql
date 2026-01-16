@@ -1,0 +1,1 @@
+ALTER TABLE "board" ADD COLUMN "coverImage" varchar(255);

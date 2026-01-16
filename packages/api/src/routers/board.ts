@@ -16,8 +16,77 @@ import {
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { assertUserInWorkspace } from "../utils/auth";
+import { generateDownloadUrl, generateUploadUrl } from "../utils/s3";
 
 export const boardRouter = createTRPCRouter({
+  uploadCoverImage: protectedProcedure
+    .meta({
+      openapi: {
+        method: "POST",
+        path: "/boards/{boardPublicId}/cover-image",
+        summary: "Upload cover image",
+        description: "Uploads a cover image for a board",
+        tags: ["Boards"],
+        protect: true,
+      },
+    })
+    .input(
+      z.object({
+        boardPublicId: z.string().min(12),
+        filename: z.string().min(1).max(255),
+        contentType: z.string(),
+        size: z
+          .number()
+          .positive()
+          .max(5 * 1024 * 1024), // 5MB max
+      }),
+    )
+    .output(z.object({ url: z.string(), key: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.user?.id;
+
+      if (!userId)
+        throw new TRPCError({
+          message: `User not authenticated`,
+          code: "UNAUTHORIZED",
+        });
+
+      const board = await boardRepo.getWorkspaceAndBoardIdByBoardPublicId(
+        ctx.db,
+        input.boardPublicId,
+      );
+
+      if (!board)
+        throw new TRPCError({
+          message: `Board with public ID ${input.boardPublicId} not found`,
+          code: "NOT_FOUND",
+        });
+
+      await assertUserInWorkspace(ctx.db, userId, board.workspaceId);
+
+      const bucket = process.env.NEXT_PUBLIC_ATTACHMENTS_BUCKET_NAME;
+      if (!bucket)
+        throw new TRPCError({
+          message: `Attachments bucket not configured`,
+          code: "INTERNAL_SERVER_ERROR",
+        });
+
+      // Sanitize filename
+      const sanitizedFilename = input.filename
+        .replace(/[^a-zA-Z0-9._-]/g, "_")
+        .substring(0, 200);
+
+      const s3Key = `board-covers/${input.boardPublicId}/${generateUID()}-${sanitizedFilename}`;
+
+      const url = await generateUploadUrl(
+        bucket,
+        s3Key,
+        input.contentType,
+        3600, // 1 hour
+      );
+
+      return { url, key: s3Key };
+    }),
   all: protectedProcedure
     .meta({
       openapi: {
@@ -138,6 +207,22 @@ export const boardRouter = createTRPCRouter({
         },
       );
 
+      if (result && result.coverImage) {
+        const bucket = process.env.NEXT_PUBLIC_ATTACHMENTS_BUCKET_NAME;
+        if (bucket) {
+             try {
+              const url = await generateDownloadUrl(
+                bucket,
+                result.coverImage,
+                3600
+              );
+              return { ...result, coverImage: url };
+             } catch (e) {
+                 // ignore
+             }
+        }
+      }
+
       return result;
     }),
   bySlug: publicProcedure
@@ -232,6 +317,7 @@ export const boardRouter = createTRPCRouter({
         labels: z.array(z.string().min(1)),
         type: z.enum(["regular", "template"]).optional(),
         sourceBoardPublicId: z.string().min(12).optional(),
+        coverImage: z.string().optional(),
       }),
     )
     .output(z.custom<Awaited<ReturnType<typeof boardRepo.create>>>())
@@ -343,6 +429,7 @@ export const boardRouter = createTRPCRouter({
         createdBy: userId,
         workspaceId: workspace.id,
         type: input.type,
+        coverImage: input.coverImage,
       });
 
       if (!result)
@@ -399,6 +486,8 @@ export const boardRouter = createTRPCRouter({
           .regex(/^(?![-]+$)[a-zA-Z0-9-]+$/)
           .optional(),
         visibility: z.enum(["public", "private"]).optional(),
+        coverImage: z.string().nullable().optional(),
+        workspacePublicId: z.string().min(12).optional(),
       }),
     )
     .output(z.custom<Awaited<ReturnType<typeof boardRepo.update>>>())
@@ -424,18 +513,55 @@ export const boardRouter = createTRPCRouter({
 
       await assertUserInWorkspace(ctx.db, userId, board.workspaceId);
 
-      if (input.slug) {
+      // Handle workspace move
+      let newWorkspaceId: number | undefined;
+      if (input.workspacePublicId) {
+         // Verify user has permissions in the target workspace
+         const targetWorkspace = await workspaceRepo.getByPublicId(
+           ctx.db,
+           input.workspacePublicId,
+         );
+
+         if (!targetWorkspace) {
+           throw new TRPCError({
+             message: `Target workspace with public ID ${input.workspacePublicId} not found`,
+             code: "NOT_FOUND",
+           });
+         }
+
+         // User must be a member of the target workspace
+         await assertUserInWorkspace(ctx.db, userId, targetWorkspace.id);
+
+         newWorkspaceId = targetWorkspace.id;
+      }
+
+      // Check slug uniqueness if slug is changing or if moving to a new workspace
+      const targetWorkspaceId = newWorkspaceId ?? board.workspaceId;
+      const targetSlug = input.slug ?? board.slug;
+
+      if (input.slug || newWorkspaceId) {
         const isBoardSlugAvailable = await boardRepo.isBoardSlugAvailable(
           ctx.db,
-          input.slug,
-          board.workspaceId,
+          targetSlug,
+          targetWorkspaceId,
         );
 
+        // If moving workspace and slug is taken, we should probably append something to make it unique
+        // but for now let's just error if explicit slug change, or if implicitly moving with same slug
         if (!isBoardSlugAvailable) {
-          throw new TRPCError({
-            message: `Board slug ${input.slug} is not available`,
-            code: "BAD_REQUEST",
-          });
+           if (input.slug) {
+               throw new TRPCError({
+                message: `Board slug ${targetSlug} is not available in the target workspace`,
+                code: "BAD_REQUEST",
+              });
+           } else {
+               // If moving to new workspace and current slug is taken, try to generate a unique one
+               // This is a simplified approach. Ideally we'd append -1, -2, etc.
+               throw new TRPCError({
+                   message: `Board slug ${targetSlug} is already taken in the target workspace. Please rename the board or its URL first.`,
+                   code: "CONFLICT",
+               });
+           }
         }
       }
 
@@ -444,6 +570,8 @@ export const boardRouter = createTRPCRouter({
         slug: input.slug,
         boardPublicId: input.boardPublicId,
         visibility: input.visibility,
+        coverImage: input.coverImage,
+        workspaceId: newWorkspaceId,
       });
 
       if (!result)

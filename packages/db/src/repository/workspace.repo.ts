@@ -255,6 +255,24 @@ export const getAllMembersByPublicIds = (
   });
 };
 
+export const getUserIdsByPublicIds = async (
+  db: dbClient,
+  memberPublicIds: string[],
+) => {
+  if (memberPublicIds.length === 0) return [];
+
+  const members = await db.query.workspaceMembers.findMany({
+    columns: {
+      userId: true,
+    },
+    where: inArray(workspaceMembers.publicId, memberPublicIds),
+  });
+
+  return members
+    .map((member) => member.userId)
+    .filter((id): id is string => id !== null);
+};
+
 export const hardDelete = (db: dbClient, workspacePublicId: string) => {
   return db
     .delete(workspaces)
