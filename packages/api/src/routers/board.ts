@@ -208,6 +208,10 @@ export const boardRouter = createTRPCRouter({
       );
 
       if (result && result.coverImage) {
+        if (result.coverImage.startsWith("http")) {
+            return result;
+        }
+
         const bucket = process.env.NEXT_PUBLIC_ATTACHMENTS_BUCKET_NAME;
         if (bucket) {
              try {
