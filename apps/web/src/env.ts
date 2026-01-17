@@ -102,6 +102,7 @@ export const env = createEnv({
         (s) => !s || s.toLowerCase() === "true" || s.toLowerCase() === "false",
       )
       .optional(),
+    NEXT_PUBLIC_NOVU_APP_ID: z.string().optional(),
     NEXT_PUBLIC_DISABLE_SIGN_UP: z
       .string()
       .transform((s) => (s === "" ? undefined : s))
@@ -133,6 +134,7 @@ export const env = createEnv({
       process.env.NEXT_PUBLIC_ATTACHMENTS_BUCKET_NAME,
     NEXT_PUBLIC_STORAGE_DOMAIN: process.env.NEXT_PUBLIC_STORAGE_DOMAIN,
     NEXT_PUBLIC_ALLOW_CREDENTIALS: process.env.NEXT_PUBLIC_ALLOW_CREDENTIALS,
+    NEXT_PUBLIC_NOVU_APP_ID: process.env.NEXT_PUBLIC_NOVU_APP_ID,
     NEXT_PUBLIC_DISABLE_SIGN_UP: process.env.NEXT_PUBLIC_DISABLE_SIGN_UP,
     NEXT_PUBLIC_USE_STANDALONE_OUTPUT:
       process.env.NEXT_PUBLIC_USE_STANDALONE_OUTPUT,
