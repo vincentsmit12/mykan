@@ -1,5 +1,3 @@
-import { NovuProvider } from "@novu/notification-center";
-import { env } from "next-runtime-env";
 import { useTheme } from "next-themes";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -98,10 +96,8 @@ export default function Dashboard({
   }, [hasLoaded, availableWorkspaces.length, openModal]);
 
   const isDarkMode = resolvedTheme === "dark";
-  const novuAppId = env("NEXT_PUBLIC_NOVU_APP_ID");
-  const userId = session?.user?.id;
 
-  const content = (
+  return (
     <>
       <style jsx global>{`
         html {
@@ -159,7 +155,11 @@ export default function Dashboard({
             className={`fixed top-12 z-40 h-[calc(100dvh-3rem)] w-[calc(100vw-1.5rem)] transform transition-transform duration-300 ease-in-out md:relative md:top-0 md:h-full md:w-auto md:translate-x-0 ${isSideNavOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"} `}
           >
             <SideNavigation
-              user={{ email: session?.user.email, image: session?.user.image }}
+              user={{
+                email: session?.user.email,
+                image: session?.user.image,
+                id: session?.user.id,
+              }}
               isLoading={sessionLoading}
               onCloseSideNav={closeSideNav}
             />
@@ -192,16 +192,4 @@ export default function Dashboard({
     </>
   );
 
-  if (novuAppId && userId) {
-    return (
-      <NovuProvider
-        subscriberId={userId}
-        applicationIdentifier={novuAppId}
-      >
-        {content}
-      </NovuProvider>
-    );
-  }
-
-  return content;
 }

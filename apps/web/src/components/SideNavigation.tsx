@@ -25,7 +25,7 @@ import settingsIconLight from "~/assets/settings-light.json";
 import templatesIconDark from "~/assets/templates-dark.json";
 import templatesIconLight from "~/assets/templates-light.json";
 import ButtonComponent from "~/components/Button";
-import { NotificationBellComponent } from "~/components/NotificationBell";
+import NotificationInbox from "~/components/NotificationInbox";
 import ReactiveButton from "~/components/ReactiveButton";
 import UserMenu from "~/components/UserMenu";
 import WorkspaceMenu from "~/components/WorkspaceMenu";
@@ -42,6 +42,7 @@ interface SideNavigationProps {
 interface UserType {
   email?: string | null | undefined;
   image?: string | null | undefined;
+  id?: string | undefined;
 }
 
 export default function SideNavigation({
@@ -87,7 +88,7 @@ export default function SideNavigation({
   const isCloudEnv = env("NEXT_PUBLIC_KAN_ENV") === "cloud";
 
   const isDarkMode = resolvedTheme === "dark";
-  const novuAppId = env("NEXT_PUBLIC_NOVU_APP_ID");
+  const novuAppId = env("NEXT_PUBLIC_NOVU_APPLICATION_IDENTIFIER");
 
   const navigation: {
     name: string;
@@ -207,9 +208,14 @@ export default function SideNavigation({
         </div>
 
         <div className="space-y-2">
-          {novuAppId && (
-            <div className={twMerge("flex justify-center", !isCollapsed && "justify-start px-2")}>
-              <NotificationBellComponent />
+          {novuAppId && user.id && (
+            <div
+              className={twMerge(
+                "flex justify-center",
+                !isCollapsed && "justify-start px-2",
+              )}
+            >
+              <NotificationInbox subscriberId={user.id} />
             </div>
           )}
           <UserMenu

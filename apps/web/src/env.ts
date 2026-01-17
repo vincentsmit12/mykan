@@ -103,6 +103,7 @@ export const env = createEnv({
       )
       .optional(),
     NEXT_PUBLIC_NOVU_APP_ID: z.string().optional(),
+    NEXT_PUBLIC_NOVU_APPLICATION_IDENTIFIER: z.string().optional(),
     NEXT_PUBLIC_DISABLE_SIGN_UP: z
       .string()
       .transform((s) => (s === "" ? undefined : s))
@@ -140,6 +141,8 @@ export const env = createEnv({
       process.env.NEXT_PUBLIC_USE_STANDALONE_OUTPUT,
     NEXT_PUBLIC_WHITE_LABEL_HIDE_POWERED_BY:
       process.env.NEXT_PUBLIC_WHITE_LABEL_HIDE_POWERED_BY,
+    NEXT_PUBLIC_NOVU_APPLICATION_IDENTIFIER:
+      process.env.NEXT_PUBLIC_NOVU_APPLICATION_IDENTIFIER,
   },
   skipValidation:
     !!process.env.CI || process.env.npm_lifecycle_event === "lint",
