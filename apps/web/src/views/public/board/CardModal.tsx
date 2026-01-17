@@ -77,8 +77,8 @@ export function CardModal({
                         pathname: router.pathname,
                         query: {
                           ...router.query,
-                          workspaceSlug,
-                          boardSlug: [boardSlug],
+                          workspaceSlug: workspaceSlug ?? "",
+                          boardSlug: [boardSlug ?? ""],
                         },
                       },
                       undefined,
