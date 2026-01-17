@@ -1,3 +1,5 @@
+import { NovuProvider } from "@novu/notification-center";
+import { env } from "next-runtime-env";
 import { useTheme } from "next-themes";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -96,8 +98,10 @@ export default function Dashboard({
   }, [hasLoaded, availableWorkspaces.length, openModal]);
 
   const isDarkMode = resolvedTheme === "dark";
+  const novuAppId = env("NEXT_PUBLIC_NOVU_APP_ID");
+  const userId = session?.user?.id;
 
-  return (
+  const content = (
     <>
       <style jsx global>{`
         html {
@@ -187,4 +191,17 @@ export default function Dashboard({
       </div>
     </>
   );
+
+  if (novuAppId && userId) {
+    return (
+      <NovuProvider
+        subscriberId={userId}
+        applicationIdentifier={novuAppId}
+      >
+        {content}
+      </NovuProvider>
+    );
+  }
+
+  return content;
 }

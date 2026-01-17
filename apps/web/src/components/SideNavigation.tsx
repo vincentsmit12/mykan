@@ -25,6 +25,7 @@ import settingsIconLight from "~/assets/settings-light.json";
 import templatesIconDark from "~/assets/templates-dark.json";
 import templatesIconLight from "~/assets/templates-light.json";
 import ButtonComponent from "~/components/Button";
+import { NotificationBellComponent } from "~/components/NotificationBell";
 import ReactiveButton from "~/components/ReactiveButton";
 import UserMenu from "~/components/UserMenu";
 import WorkspaceMenu from "~/components/WorkspaceMenu";
@@ -86,6 +87,7 @@ export default function SideNavigation({
   const isCloudEnv = env("NEXT_PUBLIC_KAN_ENV") === "cloud";
 
   const isDarkMode = resolvedTheme === "dark";
+  const novuAppId = env("NEXT_PUBLIC_NOVU_APP_ID");
 
   const navigation: {
     name: string;
@@ -205,6 +207,11 @@ export default function SideNavigation({
         </div>
 
         <div className="space-y-2">
+          {novuAppId && (
+            <div className={twMerge("flex justify-center", !isCollapsed && "justify-start px-2")}>
+              <NotificationBellComponent />
+            </div>
+          )}
           <UserMenu
             email={user.email ?? ""}
             imageUrl={user.image ?? undefined}
