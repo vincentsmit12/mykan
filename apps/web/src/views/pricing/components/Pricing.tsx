@@ -48,7 +48,7 @@ const Pricing = () => {
       href: "signup",
       buttonText: t`Get Started`,
       price: { monthly: "$10.00", annually: "$8.00" },
-      description: t`Kanban is better with a team. Perfect for small and growing teams looking to collaborate.`,
+      description: t`BSocialban is better with a team. Perfect for small and growing teams looking to collaborate.`,
       featureHeader: t`Everything in the free plan, plus:`,
       features: [
         t`Workspace members`,
@@ -66,7 +66,7 @@ const Pricing = () => {
       href: "https://github.com/kanbn/kan",
       buttonText: t`View docs`,
       price: { monthly: "-", annually: "-" },
-      description: t`Host Kan on your own infrastructure. Ideal for organisations that need complete control over their data.`,
+      description: t`Host BSocial on your own infrastructure. Ideal for organisations that need complete control over their data.`,
       featureHeader: t`Complete control and ownership:`,
       features: [
         t`Run on your own infrastructure`,

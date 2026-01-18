@@ -29,7 +29,7 @@ const UpdateBoardSlugButton = ({
       <div className="flex items-center">
         <span>
           {env("NEXT_PUBLIC_KAN_ENV") === "cloud"
-            ? "kan.bn"
+            ? "BSocial"
             : env("NEXT_PUBLIC_BASE_URL")}
         </span>
         <div className="mx-1.5 h-4 w-px rotate-[20deg] bg-gray-300 dark:bg-dark-600"></div>

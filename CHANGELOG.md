@@ -106,7 +106,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Initial release of Kan
+- Initial release of BSocial
 - Core project management features
 - Board, list, and card management
 - User authentication system

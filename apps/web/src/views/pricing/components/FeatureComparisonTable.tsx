@@ -182,7 +182,7 @@ const FeatureComparisonTable = ({
   const products = [
     {
       id: "kan",
-      name: t`Kan`,
+      name: t`BSocial`,
       featured: true,
     },
     {

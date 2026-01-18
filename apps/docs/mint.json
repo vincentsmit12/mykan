@@ -1,10 +1,10 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "kan.bn",
+  "name": "BSocial",
   "logo": {
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg",
-    "href": "https://kan.bn"
+    "href": "https://bsocial.com"
   },
   "favicon": "./favicon.png",
   "colors": {
@@ -19,17 +19,17 @@
   "topbarLinks": [
     {
       "name": "Sign in",
-      "url": "https://kan.bn/login"
+      "url": "https://bsocial.com/login"
     }
   ],
   "topbarCtaButton": {
     "name": "Go to app",
-    "url": "https://kan.bn/boards"
+    "url": "https://bsocial.com/boards"
   },
   "anchors": [
     {
       "name": "API Reference",
-      "openapi": "https://kan.bn/api/v1/openapi.json",
+      "openapi": "https://bsocial.com/api/v1/openapi.json",
       "url": "api-reference",
       "icon": "square-terminal"
     },

@@ -1,16 +1,16 @@
 ![github-background](https://github.com/user-attachments/assets/f728f52e-bf67-4357-9ba2-c24c437488e3)
 
 <div align="center">
-  <h3 align="center">Kan</h3>
+  <h3 align="center">BSocial</h3>
   <p>The open-source project management alternative to Trello.</p>
 </div>
 
 <p align="center">
-  <a href="https://kan.bn/kan/roadmap">Roadmap</a>
+  <a href="https://bsocial.com/kan/roadmap">Roadmap</a>
   ·
-  <a href="https://kan.bn">Website</a>
+  <a href="https://bsocial.com">Website</a>
   ·
-  <a href="https://docs.kan.bn">Docs</a>
+  <a href="https://docs.bsocial.com">Docs</a>
   ·
   <a href="https://discord.gg/e6ejRb6CmT">Discord</a>
 </p>
@@ -30,7 +30,7 @@
 - 🎨 **Templates** : Save time with reusable custom board templates
 - ⚡️ **Integrations (coming soon)** : Connect your favourite tools
 
-See our [roadmap](https://kan.bn/kan/roadmap) for upcoming features.
+See our [roadmap](https://bsocial.com/kan/roadmap) for upcoming features.
 
 ## Screenshot 👁️
 
@@ -38,16 +38,16 @@ See our [roadmap](https://kan.bn/kan/roadmap) for upcoming features.
 
 ## Made With 🛠️
 
-- [Next.js](https://nextjs.org/?ref=kan.bn)
-- [tRPC](https://trpc.io/?ref=kan.bn)
-- [Better Auth](https://better-auth.com/?ref=kan.bn)
-- [Tailwind CSS](https://tailwindcss.com/?ref=kan.bn)
-- [Drizzle ORM](https://orm.drizzle.team/?ref=kan.bn)
-- [React Email](https://react.email/?ref=kan.bn)
+- [Next.js](https://nextjs.org/?ref=BSocial)
+- [tRPC](https://trpc.io/?ref=BSocial)
+- [Better Auth](https://better-auth.com/?ref=BSocial)
+- [Tailwind CSS](https://tailwindcss.com/?ref=BSocial)
+- [Drizzle ORM](https://orm.drizzle.team/?ref=BSocial)
+- [React Email](https://react.email/?ref=BSocial)
 
 ## Self Hosting 🐳
 
-The easiest way to self-host Kan is with Docker Compose. This will set up everything for you including your postgres database.
+The easiest way to self-host BSocial is with Docker Compose. This will set up everything for you including your postgres database.
 
 1. Create a new file called `docker-compose.yml` and paste the following configuration:
 
@@ -97,7 +97,7 @@ volumes:
 docker compose up -d
 ```
 
-3. Access Kan at http://localhost:3000
+3. Access BSocial at http://localhost:3000
 
 The application will be running in the background. You can manage the containers using these commands:
 
@@ -141,7 +141,7 @@ pnpm dev
 | Variable                                  | Description                                               | Required                              | Example                                                     |
 | ----------------------------------------- | --------------------------------------------------------- | ------------------------------------- | ----------------------------------------------------------- |
 | `POSTGRES_URL`                            | PostgreSQL connection URL                                 | To use external database              | `postgres://user:pass@localhost:5432/db`                    |
-| `EMAIL_FROM`                              | Sender email address                                      | For Email                             | `"Kan <hello@mail.kan.bn>"`                                 |
+| `EMAIL_FROM`                              | Sender email address                                      | For Email                             | `"BSocial <hello@mail.BSocial>"`                                 |
 | `SMTP_HOST`                               | SMTP server hostname                                      | For Email                             | `smtp.resend.com`                                           |
 | `SMTP_PORT`                               | SMTP server port                                          | For Email                             | `465`                                                       |
 | `SMTP_USER`                               | SMTP username/email                                       | No                                    | `resend`                                                    |
@@ -175,7 +175,7 @@ pnpm dev
 | `NEXT_PUBLIC_ATTACHMENTS_BUCKET_NAME`     | S3 bucket name for attachments                            | For file uploads                      | `attachments`                                               |
 | `NEXT_PUBLIC_ALLOW_CREDENTIALS`           | Allow email & password login                              | For authentication                    | `true`                                                      |
 | `NEXT_PUBLIC_DISABLE_SIGN_UP`             | Disable sign up                                           | For authentication                    | `false`                                                     |
-| `NEXT_PUBLIC_WHITE_LABEL_HIDE_POWERED_BY` | Hide “Powered by kan.bn” on public boards (self-host)     | For white labelling                   | `true`                                                      |
+| `NEXT_PUBLIC_WHITE_LABEL_HIDE_POWERED_BY` | Hide “Powered by BSocial” on public boards (self-host)     | For white labelling                   | `true`                                                      |
 | `KAN_ADMIN_API_KEY`                       | Admin API key for stats and admin endpoints               | For admin/monitoring                  | `your-secret-admin-key`                                     |
 
 See `.env.example` for a complete list of supported environment variables.
@@ -192,8 +192,8 @@ We welcome contributions! Please read our [contribution guidelines](CONTRIBUTING
 
 ## License 📝
 
-Kan is licensed under the [AGPLv3 license](LICENSE).
+BSocial is licensed under the [AGPLv3 license](LICENSE).
 
 ## Contact 📧
 
-For support or to get in touch, please email [henry@kan.bn](mailto:henry@kan.bn) or join our [Discord server](https://discord.gg/e6ejRb6CmT).
+For support or to get in touch, please email [henry@bsocial.com](mailto:henry@bsocial.com) or join our [Discord server](https://discord.gg/e6ejRb6CmT).
