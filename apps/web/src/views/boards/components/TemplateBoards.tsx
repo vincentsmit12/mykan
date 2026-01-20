@@ -13,7 +13,7 @@ export interface Template {
 export const getTemplates = (): Template[] => [
   {
     id: "basic",
-    name: t`Basic Kanban`,
+    name: t`Basic BSocialban`,
     lists: [t`To Do`, t`In Progress`, t`Done`],
     labels: [t`High Priority`, t`Medium Priority`, t`Low Priority`],
   },

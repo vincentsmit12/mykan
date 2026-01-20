@@ -235,7 +235,8 @@ export const cardRouter = createTRPCRouter({
         const recipients = mentionedUserIds.filter((id) => id !== userId);
 
         if (recipients.length > 0) {
-          await (notificationClient as any).trigger("mention-in-card", {
+          await (notificationClient as any).trigger({
+            name: "mention-in-card",
             to: recipients,
             payload: {
               cardTitle: card.title,
@@ -340,7 +341,8 @@ export const cardRouter = createTRPCRouter({
         const recipients = mentionedUserIds.filter((id) => id !== userId);
 
         if (recipients.length > 0) {
-          await (notificationClient as any).trigger("mention-in-card", {
+          await (notificationClient as any).trigger({
+            name: "mention-in-card",
             to: recipients,
             payload: {
               cardTitle: card.title,
@@ -942,7 +944,8 @@ export const cardRouter = createTRPCRouter({
           const recipients = mentionedUserIds.filter((id) => id !== userId);
 
           if (recipients.length > 0) {
-            await (notificationClient as any).trigger("mention-in-card", {
+            await (notificationClient as any).trigger({
+              name: "mention-in-card",
               to: recipients,
               payload: {
                 cardTitle: result.title,

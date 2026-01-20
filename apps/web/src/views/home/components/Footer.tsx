@@ -22,20 +22,20 @@ const StatusMarker = () => (
 const Footer = () => {
   const navigation = {
     documentation: [
-      { name: t`Getting started`, href: "https://docs.kan.bn/introduction" },
+      { name: t`Getting started`, href: "https://docs.bsocial.com/introduction" },
       {
         name: t`Importing from Trello`,
-        href: "https://docs.kan.bn/imports/trello",
+        href: "https://docs.bsocial.com/imports/trello",
       },
       {
         name: t`API Reference`,
-        href: "https://docs.kan.bn/api-reference/introduction",
+        href: "https://docs.bsocial.com/api-reference/introduction",
       },
     ],
     company: [
       { name: t`Roadmap`, href: "/kan/roadmap" },
       { name: t`GitHub`, href: "https://github.com/kanbn/kan" },
-      { name: t`Contact`, href: "mailto:support@kan.bn" },
+      { name: t`Contact`, href: "mailto:support@bsocial.com" },
       { name: t`OSS Friends`, href: "/oss-friends" },
     ],
     legal: [

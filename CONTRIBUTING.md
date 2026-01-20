@@ -1,6 +1,6 @@
-# Contributing to Kan
+# Contributing to BSocial
 
-Thank you for your interest in contributing to Kan! This document provides guidelines and instructions for contributing to the project.
+Thank you for your interest in contributing to BSocial! This document provides guidelines and instructions for contributing to the project.
 
 ## Getting Started
 
@@ -39,7 +39,7 @@ Thank you for your interest in contributing to Kan! This document provides guide
 
 - Join our [Discord server](https://discord.gg/e6ejRb6CmT) for questions
 - Check existing issues and pull requests
-- Email [henry@kan.bn](mailto:henry@kan.bn) for major concerns
+- Email [henry@bsocial.com](mailto:henry@bsocial.com) for major concerns
 
 ## Code of Conduct
 
@@ -49,4 +49,4 @@ We aim to foster an inclusive and welcoming community. Harassment and abusive be
 
 ## License
 
-By contributing to Kan, you agree that your contributions will be licensed under the AGPLv3 License.
+By contributing to BSocial, you agree that your contributions will be licensed under the AGPLv3 License.

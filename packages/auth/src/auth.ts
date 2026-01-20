@@ -319,7 +319,7 @@ export const initAuth = (db: dbClient) => {
               },
             );
           } else {
-            await sendEmail(email, "Sign in to kan.bn", "MAGIC_LINK", {
+            await sendEmail(email, "Sign in to BSocial", "MAGIC_LINK", {
               magicLoginUrl: url,
             });
           }

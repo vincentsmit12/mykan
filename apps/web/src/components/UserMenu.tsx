@@ -186,7 +186,7 @@ export default function UserMenu({
               </Menu.Item>
               <Menu.Item>
                 <Link
-                  href="mailto:support@kan.bn"
+                  href="mailto:support@bsocial.com"
                   target="_blank"
                   rel="noreferrer"
                   onClick={handleLinkClick}
@@ -197,7 +197,7 @@ export default function UserMenu({
               </Menu.Item>
               <Menu.Item>
                 <Link
-                  href="https://docs.kan.bn"
+                  href="https://docs.bsocial.com"
                   target="_blank"
                   rel="noreferrer"
                   onClick={handleLinkClick}

@@ -27,10 +27,10 @@ const Faqs = () => {
       ),
     },
     {
-      question: t`What's the difference between Kan and Trello?`,
+      question: t`What's the difference between BSocial and Trello?`,
       answer: (
         <Text>
-          {t`The main difference between Kan and Trello is that Kan is open source, allowing anyone to view, modify, and contribute to our code. Our cloud offering also offers no restrictions on features for individual use, whereas Trello locks basic features such as the number of boards you can create behind a paywall.`}
+          {t`The main difference between BSocial and Trello is that BSocial is open source, allowing anyone to view, modify, and contribute to our code. Our cloud offering also offers no restrictions on features for individual use, whereas Trello locks basic features such as the number of boards you can create behind a paywall.`}
         </Text>
       ),
     },
@@ -47,10 +47,10 @@ const Faqs = () => {
       answer: (
         <Text>
           <Trans>
-            Importing your Trello boards into Kan is easy. You can follow our
+            Importing your Trello boards into BSocial is easy. You can follow our
             step-by-step guide{" "}
             <Link
-              href="https://docs.kan.bn/imports/trello"
+              href="https://docs.bsocial.com/imports/trello"
               className="underline"
             >
               here
@@ -66,11 +66,11 @@ const Faqs = () => {
         <Text>
           <Trans>
             You can get a custom workspace URL, like{" "}
-            <Link href="https://kan.bn/kan" className="underline">
-              kan.bn/kan
+            <Link href="https://bsocial.com/kan" className="underline">
+              BSocial/kan
             </Link>
             , by going into your{" "}
-            <Link href="https://kan.bn/settings" className="underline">
+            <Link href="https://bsocial.com/settings" className="underline">
               workspace settings
             </Link>{" "}
             and purchasing a pro workspace subscription. All subscriptions help
@@ -111,7 +111,7 @@ const Faqs = () => {
           <Trans>
             You can invite team members by clicking the "Invite" button in the
             top right corner of the{" "}
-            <Link href="https://kan.bn/members" className="underline">
+            <Link href="https://bsocial.com/members" className="underline">
               members page
             </Link>{" "}
             and entering their email address. They will receive an email with a
@@ -148,9 +148,9 @@ const Faqs = () => {
         </p>
         <p className="text lg:text-md mt-3 max-w-[500px] text-center text-light-950 dark:text-dark-900">
           <Trans>
-            Find answers to common questions about Kan. Can't find what you're
+            Find answers to common questions about BSocial. Can't find what you're
             looking for? Feel free to{" "}
-            <Link href="mailto:support@kan.bn" className="underline">
+            <Link href="mailto:support@bsocial.com" className="underline">
               contact us
             </Link>
             .

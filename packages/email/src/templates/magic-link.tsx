@@ -38,12 +38,12 @@ export const MagicLinkTemplate = ({
             color: "#232323",
           }}
         >
-          kan.bn
+          BSocial
         </Heading>
         <Heading
           style={{ fontSize: "24px", fontWeight: "bold", color: "#232323" }}
         >
-          Login to your Kan account
+          Login to your BSocial account
         </Heading>
         <Text
           style={{
@@ -95,7 +95,7 @@ export const MagicLinkTemplate = ({
             target="_blank"
             style={{ color: "#7e7e7e", textDecoration: "underline" }}
           >
-            Kan
+            BSocial
           </Link>
           , the open source Trello alternative.
         </Text>

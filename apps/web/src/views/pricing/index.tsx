@@ -31,7 +31,7 @@ export default function PricingView() {
 
   return (
     <Layout>
-      <PageHead title={`${t`Pricing`} | kan.bn`} />
+      <PageHead title={`${t`Pricing`} | BSocial`} />
 
       <div className="flex h-full w-full flex-col lg:pt-[5rem]">
         <div className="w-full pb-10 pt-32">
@@ -67,7 +67,7 @@ export default function PricingView() {
             {t`Feature breakdown`}
           </p>
           <p className="text-md lg:text-md my-4 max-w-[500px] text-center text-light-950 dark:text-dark-900">
-            {t`Compare our features to see why Kan is the best choice.`}
+            {t`Compare our features to see why BSocial is the best choice.`}
           </p>
           <div className="mt-2">
             <Button variant="primary" href="/signup">

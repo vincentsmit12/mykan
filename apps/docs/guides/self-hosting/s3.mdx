@@ -1,19 +1,19 @@
 ---
-title: "Kan + MinIO (S3)"
+title: "BSocial + MinIO (S3)"
 mode: "wide"
 tag: "NEW"
 ---
 
-Deploy Kan with PostgreSQL and MinIO (S3-compatible storage) using Docker Compose, with clear steps and production notes.
+Deploy BSocial with PostgreSQL and MinIO (S3-compatible storage) using Docker Compose, with clear steps and production notes.
 
 ## What you’ll set up
 
 <CardGroup cols={2}>
-  <Card title="Kan" icon="globe" color="#0284c7" horizontal>
-    Kan web app (Next.js), on port 3000.
+  <Card title="BSocial" icon="globe" color="#0284c7" horizontal>
+    BSocial web app (Next.js), on port 3000.
   </Card>
   <Card title="PostgreSQL 15" icon="database" color="#65a30d" horizontal>
-    PostgreSQL database for Kan.
+    PostgreSQL database for BSocial.
   </Card>
 </CardGroup>
 <Card title="MinIO (S3-compatible)" icon="cloud" color="#ca8a04" horizontal>
@@ -22,21 +22,21 @@ Deploy Kan with PostgreSQL and MinIO (S3-compatible storage) using Docker Compos
 
 ## How it works
 
-- Kan stores data in PostgreSQL.
-- Kan uploads files (e.g., avatars) to MinIO over the S3 API.
+- BSocial stores data in PostgreSQL.
+- BSocial uploads files (e.g., avatars) to MinIO over the S3 API.
 - The browser fetches public files directly from MinIO’s public URL.
-- The Next.js image optimizer in Kan must be explicitly allowed to fetch from your storage host.
+- The Next.js image optimizer in BSocial must be explicitly allowed to fetch from your storage host.
 
 Key domain settings:
 
-- <code>NEXT_PUBLIC_BASE_URL</code> → the Kan site
+- <code>NEXT_PUBLIC_BASE_URL</code> → the BSocial site
 - <code>NEXT_PUBLIC_STORAGE_URL</code> → the public S3 base URL
 - <code>NEXT_PUBLIC_STORAGE_DOMAIN</code> → the exact S3 hostname (no scheme)
 
 ## Prerequisites
 
 - Docker and Docker Compose
-- Open local ports: 3000 (Kan), 5432 (Postgres), 9000/9001 (MinIO)
+- Open local ports: 3000 (BSocial), 5432 (Postgres), 9000/9001 (MinIO)
 - A long random string for <code>BETTER_AUTH_SECRET</code> (32+ chars)
 
 <Note type="warning">
@@ -184,7 +184,7 @@ Key domain settings:
 
     <ul>
       <li>
-        Kan: <a href="http://kan.localtest.me:3000">http://kan.localtest.me:3000</a>
+        BSocial: <a href="http://kan.localtest.me:3000">http://kan.localtest.me:3000</a>
       </li>
       <li>
         MinIO Console:{" "}
@@ -234,7 +234,7 @@ Key domain settings:
 
   <Step title="Verify the setup">
     <ul>
-      <li>Sign in to Kan and upload an avatar (Settings).</li>
+      <li>Sign in to BSocial and upload an avatar (Settings).</li>
       <li>Confirm the object is created in your MinIO bucket.</li>
       <li>The avatar should render without errors.</li>
     </ul>
@@ -250,7 +250,7 @@ Key domain settings:
         <code>NEXT_PUBLIC_STORAGE_URL</code> should use the same host (with
         scheme/port).
       </li>
-      <li>Ensure you’re using the latest Kan image.</li>
+      <li>Ensure you’re using the latest BSocial image.</li>
     </ul>
 
   </Step>
@@ -277,7 +277,7 @@ Key domain settings:
     <li><code>NEXT_PUBLIC_STORAGE_URL=https://s3.example.com</code></li>
     <li><code>NEXT_PUBLIC_STORAGE_DOMAIN=s3.example.com</code></li>
     <li>Keep <code>S3_FORCE_PATH_STYLE=true</code> for MinIO.</li>
-    <li>Put Kan and MinIO behind HTTPS with a reverse proxy (Traefik/Nginx) and valid TLS.</li>
+    <li>Put BSocial and MinIO behind HTTPS with a reverse proxy (Traefik/Nginx) and valid TLS.</li>
   </ul>
   </Tab>
 </Tabs>
@@ -357,7 +357,7 @@ Key domain settings:
     <li>
       Same host in <code>NEXT_PUBLIC_STORAGE_URL</code>.
     </li>
-    <li>Update to the latest Kan image.</li>
+    <li>Update to the latest BSocial image.</li>
   </ul>
 </Accordion>
 
@@ -384,7 +384,7 @@ Key domain settings:
 
   <Accordion title="Connectivity checks">
     <ul>
-      <li>The Kan container must reach <code>S3_ENDPOINT</code>.</li>
+      <li>The BSocial container must reach <code>S3_ENDPOINT</code>.</li>
       <li>Verify DNS/ports inside the container (e.g., <code>docker exec -it &lt;kan-container&gt; sh</code>).</li>
     </ul>
   </Accordion>
@@ -392,6 +392,6 @@ Key domain settings:
 
 ## References
 
-- [Kan README](https://github.com/kanbn/kan/blob/main/README.md)
+- [BSocial README](https://github.com/kanbn/kan/blob/main/README.md)
 - [Cloud compose reference](https://github.com/kanbn/kan/blob/main/cloud/docker-compose.yml)
-- [Kan #109 Issue](https://github.com/kanbn/kan/issues/109)
+- [BSocial #109 Issue](https://github.com/kanbn/kan/issues/109)

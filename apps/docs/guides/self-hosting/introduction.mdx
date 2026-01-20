@@ -1,20 +1,20 @@
 ---
 title: "Introduction"
-description: "Overview and quick start to run Kan on your own infrastructure using Docker Compose."
+description: "Overview and quick start to run BSocial on your own infrastructure using Docker Compose."
 mode: "wide"
 tag: "NEW"
 ---
 
-This guide introduces how to self-host Kan. It starts with the minimal Docker Compose setup (web + PostgreSQL) and points you to optional features like email and S3-based file storage.
+This guide introduces how to self-host BSocial. It starts with the minimal Docker Compose setup (web + PostgreSQL) and points you to optional features like email and S3-based file storage.
 
 ## What you’ll set up
 
 <CardGroup cols={2}>
-  <Card title="Kan" icon="globe" color="#0284c7" horizontal>
+  <Card title="BSocial" icon="globe" color="#0284c7" horizontal>
     Next.js application served on port 3000.
   </Card>
   <Card title="PostgreSQL 15" icon="database" color="#65a30d" horizontal>
-    Primary database for Kan data.
+    Primary database for BSocial data.
   </Card>
 </CardGroup>
 
@@ -114,7 +114,7 @@ This guide introduces how to self-host Kan. It starts with the minimal Docker Co
       POSTGRES_URL=postgresql://kan:your_postgres_password@postgres:5432/kan_db
 
       # Optional: Email
-      EMAIL_FROM="Kan <hello@mail.kan.bn>"
+      EMAIL_FROM="BSocial <hello@mail.BSocial>"
       SMTP_HOST=smtp.resend.com
       SMTP_PORT=465
       SMTP_USER=resend

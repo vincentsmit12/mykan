@@ -10,7 +10,7 @@ interface PackageJson {
 
 export default function generator(plop: PlopTypes.NodePlopAPI): void {
   plop.setGenerator("init", {
-    description: "Generate a new package for the Kan Monorepo",
+    description: "Generate a new package for the BSocial Monorepo",
     prompts: [
       {
         type: "input",
