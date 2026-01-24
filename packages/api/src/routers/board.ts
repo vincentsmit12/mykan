@@ -16,7 +16,7 @@ import {
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { assertUserInWorkspace } from "../utils/auth";
-import { generateDownloadUrl, generateUploadUrl } from "../utils/s3";
+import { generateDownloadUrl, generateUploadUrl } from "../utils/storage";
 
 export const boardRouter = createTRPCRouter({
   uploadCoverImage: protectedProcedure

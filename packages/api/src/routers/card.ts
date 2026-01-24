@@ -14,7 +14,7 @@ import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { mergeActivities } from "../utils/activities";
 import { assertUserInWorkspace } from "../utils/auth";
 import { extractMentions } from "../utils/mentions";
-import { generateDownloadUrl } from "../utils/s3";
+import { generateDownloadUrl } from "../utils/storage";
 
 export const cardRouter = createTRPCRouter({
   create: protectedProcedure
