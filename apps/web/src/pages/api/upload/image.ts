@@ -1,9 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { env as nextRuntimeEnv } from "next-runtime-env";
-
 import { createNextApiContext } from "@kan/api/trpc";
+// Remove S3 imports
+// import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+// import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 import { env } from "~/env";
 
@@ -29,7 +28,7 @@ export default async function handler(
       contentType: string;
     };
 
-    // Specific to avatar uploads for now
+    // Keep your existing validation regex
     const filenameRegex = /^[a-f0-9\-]+\/[a-zA-Z0-9_\-]+(\.jpg|\.jpeg|\.png)$/;
 
     if (!filenameRegex.test(filename)) {
@@ -43,31 +42,25 @@ export default async function handler(
       return res.status(400).json({ error: "Invalid content type" });
     }
 
-    const credentials =
-      env.S3_ACCESS_KEY_ID && env.S3_SECRET_ACCESS_KEY
-        ? {
-            accessKeyId: env.S3_ACCESS_KEY_ID,
-            secretAccessKey: env.S3_SECRET_ACCESS_KEY,
-          }
-        : undefined;
+    // --- OLD S3 LOGIC (DELETED) ---
+    // const client = new S3Client({ ... });
+    // const signedUrl = await getSignedUrl(...);
 
-    const client = new S3Client({
-      region: env.S3_REGION ?? "",
-      endpoint: env.S3_ENDPOINT ?? "",
-      forcePathStyle: env.S3_FORCE_PATH_STYLE === "true",
-      credentials,
-    });
+    // --- NEW LOCAL LOGIC ---
+    // We construct a URL that points to OUR OWN server's upload handler.
+    // The frontend will treat this just like the S3 URL and PUT the file here.
+    
+    // Get the base URL (e.g. https://your-domain.com)
+    // We use the env variable, or fallback to relative path if empty
+    const baseUrl = env.NEXT_PUBLIC_STORAGE_URL 
+        ? env.NEXT_PUBLIC_STORAGE_URL.replace('/api/uploads', '') // Strip suffix if present
+        : ''; 
 
-    const signedUrl = await getSignedUrl(
-      client,
-      new PutObjectCommand({
-        Bucket: nextRuntimeEnv("NEXT_PUBLIC_AVATAR_BUCKET_NAME") ?? "",
-        Key: filename,
-        ACL: "public-read",
-      }),
-    );
+    // Final URL: /api/upload/local?file=userid/filename.png
+    const signedUrl = `${baseUrl}/api/upload/local?file=${encodeURIComponent(filename)}`;
 
     return res.status(200).json({ url: signedUrl, key: filename });
+
   } catch (error) {
     return res.status(500).json({ error: (error as Error).message });
   }
