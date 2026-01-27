@@ -48,6 +48,7 @@ export const getAllByWorkspaceId = (
     columns: {
       publicId: true,
       name: true,
+      coverImage: true,
     },
     with: {
       lists: {

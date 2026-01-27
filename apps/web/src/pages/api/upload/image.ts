@@ -1,8 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { createNextApiContext } from "@kan/api/trpc";
-// Remove S3 imports
-// import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-// import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { env as nextRuntimeEnv } from "next-runtime-env";
+
+import { createNextApiContext, storage } from "@kan/api";
 
 import { env } from "~/env";
 
@@ -42,22 +41,16 @@ export default async function handler(
       return res.status(400).json({ error: "Invalid content type" });
     }
 
-    // --- OLD S3 LOGIC (DELETED) ---
-    // const client = new S3Client({ ... });
-    // const signedUrl = await getSignedUrl(...);
+    const bucket = nextRuntimeEnv("NEXT_PUBLIC_AVATAR_BUCKET_NAME");
+    if (!bucket) {
+      return res.status(500).json({ error: "Avatar bucket not configured" });
+    }
 
-    // --- NEW LOCAL LOGIC ---
-    // We construct a URL that points to OUR OWN server's upload handler.
-    // The frontend will treat this just like the S3 URL and PUT the file here.
-    
-    // Get the base URL (e.g. https://your-domain.com)
-    // We use the env variable, or fallback to relative path if empty
-    const baseUrl = env.NEXT_PUBLIC_STORAGE_URL 
-        ? env.NEXT_PUBLIC_STORAGE_URL.replace('/api/uploads', '') // Strip suffix if present
-        : ''; 
-
-    // Final URL: /api/upload/local?file=userid/filename.png
-    const signedUrl = `${baseUrl}/api/upload/local?file=${encodeURIComponent(filename)}`;
+    const signedUrl = await storage.generateUploadUrl(
+      bucket,
+      filename,
+      contentType,
+    );
 
     return res.status(200).json({ url: signedUrl, key: filename });
 
