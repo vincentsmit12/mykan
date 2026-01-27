@@ -3,6 +3,7 @@ import { createReadStream, createWriteStream, promises as fs } from "fs";
 import type { NextApiRequest, NextApiResponse } from "next";
 import path from "path";
 import { pipeline } from "stream/promises";
+import mime from "mime"; // OPTIONAL: Helps images load faster/correctly (pnpm add mime)
 
 export const config = {
   api: {
@@ -24,6 +25,18 @@ function verifySignature(urlPath: string, method: string, expires: string, signa
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // --- FIX: ADD CORS HEADERS ---
+  // This allows the browser to actually read the file
+  res.setHeader("Access-Control-Allow-Origin", "*"); 
+  res.setHeader("Access-Control-Allow-Methods", "GET, PUT, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  // Handle "Preflight" checks automatically
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+  // -----------------------------
+
   const { path: pathParams, expires, signature } = req.query;
 
   if (!pathParams || !Array.isArray(pathParams) || pathParams.length < 2) {
@@ -32,8 +45,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const bucket = pathParams[0];
   const key = pathParams.slice(1).join("/");
-  // Reconstruct the URL path used for signing (must match local-adapter.ts)
-  // local-adapter uses: `/api/files/${bucket}/${key}`
+  
+  // Reconstruct the URL path used for signing
   const urlPath = `/api/files/${bucket}/${key}`;
 
   if (
@@ -64,10 +77,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(404).json({ message: "File not found" });
       }
 
-      // Determine content type? S3 stores it. Local FS doesn't store metadata easily.
-      // We can guess from extension or just send generic.
-      // The browser usually handles images fine.
-      // For now, let's not set Content-Type explicitly or guess it.
+      // Try to set the correct content type (helps images display instead of download)
+      const contentType = mime.getType(filePath) || 'application/octet-stream';
+      res.setHeader('Content-Type', contentType);
 
       const readStream = createReadStream(filePath);
       await pipeline(readStream, res);
