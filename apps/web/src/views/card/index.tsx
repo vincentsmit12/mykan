@@ -394,7 +394,10 @@ export default function CardPage({ isTemplate }: { isTemplate?: boolean }) {
                     </div>
                     {!isTemplate && (
                       <div className="mt-6">
-                        <NewCommentForm cardPublicId={cardId} />
+                        <NewCommentForm
+                          cardPublicId={cardId}
+                          workspaceMembers={board?.workspace.members ?? []}
+                        />
                       </div>
                     )}
                   </div>

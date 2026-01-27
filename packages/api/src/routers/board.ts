@@ -129,9 +129,27 @@ export const boardRouter = createTRPCRouter({
 
       await assertUserInWorkspace(ctx.db, userId, workspace.id);
 
-      const result = boardRepo.getAllByWorkspaceId(ctx.db, workspace.id, {
+      const result = await boardRepo.getAllByWorkspaceId(ctx.db, workspace.id, {
         type: input.type,
       });
+
+      const bucket = process.env.NEXT_PUBLIC_ATTACHMENTS_BUCKET_NAME;
+      if (bucket) {
+        const resultWithCovers = await Promise.all(
+          result.map(async (board) => {
+            if (board.coverImage && !board.coverImage.startsWith("http")) {
+              try {
+                const url = await generateDownloadUrl(bucket, board.coverImage);
+                return { ...board, coverImage: url };
+              } catch (e) {
+                return board;
+              }
+            }
+            return board;
+          }),
+        );
+        return resultWithCovers;
+      }
 
       return result;
     }),

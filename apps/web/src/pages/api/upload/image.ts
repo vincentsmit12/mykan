@@ -1,9 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { env as nextRuntimeEnv } from "next-runtime-env";
 
-import { createNextApiContext } from "@kan/api/trpc";
+import { createNextApiContext, storage } from "@kan/api";
 
 import { env } from "~/env";
 
@@ -43,28 +41,15 @@ export default async function handler(
       return res.status(400).json({ error: "Invalid content type" });
     }
 
-    const credentials =
-      env.S3_ACCESS_KEY_ID && env.S3_SECRET_ACCESS_KEY
-        ? {
-            accessKeyId: env.S3_ACCESS_KEY_ID,
-            secretAccessKey: env.S3_SECRET_ACCESS_KEY,
-          }
-        : undefined;
+    const bucket = nextRuntimeEnv("NEXT_PUBLIC_AVATAR_BUCKET_NAME");
+    if (!bucket) {
+      return res.status(500).json({ error: "Avatar bucket not configured" });
+    }
 
-    const client = new S3Client({
-      region: env.S3_REGION ?? "",
-      endpoint: env.S3_ENDPOINT ?? "",
-      forcePathStyle: env.S3_FORCE_PATH_STYLE === "true",
-      credentials,
-    });
-
-    const signedUrl = await getSignedUrl(
-      client,
-      new PutObjectCommand({
-        Bucket: nextRuntimeEnv("NEXT_PUBLIC_AVATAR_BUCKET_NAME") ?? "",
-        Key: filename,
-        ACL: "public-read",
-      }),
+    const signedUrl = await storage.generateUploadUrl(
+      bucket,
+      filename,
+      contentType,
     );
 
     return res.status(200).json({ url: signedUrl, key: filename });

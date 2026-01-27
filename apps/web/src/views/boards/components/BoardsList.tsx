@@ -54,9 +54,17 @@ export function BoardsList({ isTemplate }: { isTemplate?: boolean }) {
           key={board.publicId}
           href={`${isTemplate ? "templates" : "boards"}/${board.publicId}`}
         >
-          <div className="align-center relative mr-5 flex h-[150px] w-full items-center justify-center rounded-md border border-dashed border-light-400 bg-light-50 shadow-sm hover:bg-light-200 dark:border-dark-600 dark:bg-dark-50 dark:hover:bg-dark-100">
-            <PatternedBackground />
-            <p className="px-4 text-[14px] font-bold text-neutral-700 dark:text-dark-1000">
+          <div className="align-center relative mr-5 flex h-[150px] w-full items-center justify-center overflow-hidden rounded-md border border-dashed border-light-400 bg-light-50 shadow-sm hover:bg-light-200 dark:border-dark-600 dark:bg-dark-50 dark:hover:bg-dark-100">
+            {board.coverImage ? (
+              <img
+                src={board.coverImage}
+                alt={board.name}
+                className="absolute inset-0 h-full w-full object-cover opacity-50"
+              />
+            ) : (
+              <PatternedBackground />
+            )}
+            <p className="relative z-10 px-4 text-[14px] font-bold text-neutral-700 dark:text-dark-1000">
               {board.name}
             </p>
           </div>

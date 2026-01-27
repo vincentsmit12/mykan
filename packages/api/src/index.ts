@@ -13,5 +13,7 @@ const createCaller = createCallerFactory(appRouter);
 type RouterInputs = inferRouterInputs<AppRouter>;
 type RouterOutputs = inferRouterOutputs<AppRouter>;
 
-export { createTRPCContext, appRouter, createCaller, createNextApiContext };
+import * as storage from "./utils/storage";
+
+export { createTRPCContext, appRouter, createCaller, createNextApiContext, storage };
 export type { AppRouter, RouterInputs, RouterOutputs };
