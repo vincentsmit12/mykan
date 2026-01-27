@@ -27,7 +27,7 @@ export default async function handler(
       contentType: string;
     };
 
-    // Specific to avatar uploads for now
+    // Keep your existing validation regex
     const filenameRegex = /^[a-f0-9\-]+\/[a-zA-Z0-9_\-]+(\.jpg|\.jpeg|\.png)$/;
 
     if (!filenameRegex.test(filename)) {
@@ -53,6 +53,7 @@ export default async function handler(
     );
 
     return res.status(200).json({ url: signedUrl, key: filename });
+
   } catch (error) {
     return res.status(500).json({ error: (error as Error).message });
   }
